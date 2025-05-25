@@ -15,8 +15,6 @@ import {
   BookOpenIcon,
   UserIcon,
   BookmarkIcon,
-  GlobeAltIcon,
-  InformationCircleIcon,
   Bars3Icon
 } from '@heroicons/react/24/outline';
 import { GitHub, LinkedIn, Language, Instagram } from '@mui/icons-material';

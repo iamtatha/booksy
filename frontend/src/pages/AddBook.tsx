@@ -21,9 +21,9 @@ import {
   Avatar,
   CircularProgress,
 } from '@mui/material';
-import { BookOpenIcon, BookmarkIcon, UserIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { BookOpenIcon, BookmarkIcon, UserIcon } from '@heroicons/react/24/outline';
 import { AccountCircle } from '@mui/icons-material';
-import { bookApi, userApi, API_URL } from '../services/api';
+import { bookApi, userApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { User } from '../types/user';
 import Logo from '../components/Logo';
