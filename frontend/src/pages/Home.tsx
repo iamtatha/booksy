@@ -2,15 +2,11 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   MagnifyingGlassIcon, 
-  BellIcon, 
   BookOpenIcon,
   UserIcon,
-  HeartIcon,
   BookmarkIcon,
   ClockIcon,
   StarIcon,
-  GlobeAltIcon,
-  InformationCircleIcon,
   Bars3Icon
 } from '@heroicons/react/24/outline';
 import {
@@ -29,7 +25,6 @@ import {
   Alert,
   AvatarGroup,
   Tooltip,
-  Chip,
 } from '@mui/material';
 import { bookApi, userApi, FollowedUserBookActivity } from '../services/api';
 import { Book, Review } from '../types/book';

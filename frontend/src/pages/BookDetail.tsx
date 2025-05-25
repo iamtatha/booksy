@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
-import { bookApi, reviewApi, userApi, fetchBookById, fetchBookReviews } from '../services/api';
+import { reviewApi, userApi, fetchBookById } from '../services/api';
 import { Book, Review } from '../types/book';
 import Logo from '../components/Logo';
 import {
@@ -18,37 +18,27 @@ import {
   Card,
   CardContent,
   Avatar,
-  Chip,
   Stack,
-  IconButton,
-  Tooltip,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   styled,
-  useTheme,
   Snackbar,
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { 
-  MagnifyingGlassIcon, 
-  BellIcon, 
   Bars3Icon, 
   XMarkIcon,
   BookOpenIcon,
   UserIcon,
-  HeartIcon,
   BookmarkIcon,
   ShoppingCartIcon,
   CalendarIcon,
   LanguageIcon,
   BookmarkSquareIcon,
   DocumentTextIcon,
-  StarIcon,
   PencilSquareIcon,
-  GlobeAltIcon,
-  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
@@ -109,9 +99,6 @@ const BookDetail: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const reviewsToShow = showAllReviews ? reviews : reviews.slice(0, 5);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [isSearching, setIsSearching] = React.useState(false);
-  const [books, setBooks] = React.useState<Book[]>([]);
   const [inWishlist, setInWishlist] = useState(false);
   const [inRecentlyRead, setInRecentlyRead] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null);
@@ -123,23 +110,6 @@ const BookDetail: React.FC = () => {
     // { name: 'My Books', href: '/my-books', icon: HeartIcon },
     // { name: 'Profile', href: '/profile', icon: UserIcon },
   ];
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-
-    setIsSearching(true);
-    try {
-      const results = await bookApi.searchBooks(searchQuery);
-      console.log('Search results:', results);
-      setBooks(results);
-    } catch (err) {
-      console.error('Error searching books:', err);
-      setError('Failed to search books');
-    } finally {
-      setIsSearching(false);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {

@@ -14,7 +14,6 @@ import {
   InputAdornment,
   Checkbox,
   FormControlLabel,
-  Slider,
   Divider,
   Select,
   MenuItem,
@@ -26,18 +25,13 @@ import {
   MagnifyingGlassIcon, 
   ChevronDownIcon, 
   ChevronUpIcon, 
-  BellIcon, 
   BookOpenIcon,
   UserIcon,
-  HeartIcon,
   BookmarkIcon,
-  GlobeAltIcon,
-  InformationCircleIcon,
   Bars3Icon
 } from '@heroicons/react/24/outline';
 import { bookApi, reviewApi } from '../services/api';
 import { Book } from '../types/book';
-import { reverse } from 'dns';
 
 const genres = [
   'Fiction', 'Non-Fiction', 'Fantasy', 'Science Fiction', 'Mystery', 'Romance', 'Biography', 'History',
@@ -61,65 +55,6 @@ const pageCountRanges = [
 
 const ratings = [5, 4, 3, 2, 1];
 
-const placeholderBooks = [
-  {
-    _id: '1',
-    title: 'The Midnight Library',
-    author: 'Matt Haig',
-    coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794',
-    averageRating: 4.5,
-  },
-  {
-    _id: '2',
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    coverImage: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4',
-    averageRating: 4.8,
-  },
-  {
-    _id: '3',
-    title: 'The Song of Achilles',
-    author: 'Madeline Miller',
-    coverImage: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66',
-    averageRating: 4.7,
-  },
-  {
-    _id: '4',
-    title: 'Project Hail Mary',
-    author: 'Andy Weir',
-    coverImage: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca',
-    averageRating: 4.9,
-  },
-  {
-    _id: '5',
-    title: 'The Seven Husbands of Evelyn Hugo',
-    author: 'Taylor Jenkins Reid',
-    coverImage: 'https://images.unsplash.com/photo-1519681393784-d120267933ba',
-    averageRating: 4.6,
-  },
-  {
-    _id: '6',
-    title: 'Bookstore Magic',
-    author: 'Jane Doe',
-    coverImage: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353',
-    averageRating: 4.7,
-  },
-  {
-    _id: '7',
-    title: 'Into the Wild',
-    author: 'Jon Krakauer',
-    coverImage: 'https://images.unsplash.com/photo-1465101178521-c1a9136a3b99',
-    averageRating: 4.5,
-  },
-  {
-    _id: '8',
-    title: 'Milk and Honey',
-    author: 'Rupi Kaur',
-    coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794',
-    averageRating: 4.8,
-  },
-];
-
 const Browse: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [tab, setTab] = useState(0);
@@ -130,7 +65,6 @@ const Browse: React.FC = () => {
   const [selectedPageRange, setSelectedPageRange] = useState<{ min: number; max: number } | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [yearRange, setYearRange] = useState<number[]>([2000, 2023]);
-  const [sort, setSort] = useState('Relevance');
   const [books, setBooks] = useState<Book[]>([]);
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
