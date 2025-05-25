@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
-    "build": "npm install && tsc && npm run postbuild",
+    "build": "tsc && npm run postbuild",
     "postbuild": "mkdir -p dist/uploads && cp -r src/uploads/* dist/uploads/ 2>/dev/null || : && cp .env dist/ 2>/dev/null || :",
     "test": "jest"
   },

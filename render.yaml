@@ -2,7 +2,8 @@ services:
   - type: web
     name: booksy-backend
     env: node
-    buildCommand: npm run build
+    rootDir: ./backend
+    buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
