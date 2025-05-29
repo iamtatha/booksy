@@ -21,10 +21,23 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || "*",
-  credentials: true,
-}));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://grey-termite-833898.hostingersite.com"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
