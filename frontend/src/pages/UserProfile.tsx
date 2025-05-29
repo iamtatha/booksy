@@ -87,7 +87,7 @@ const getFullImageUrl = (imageUrl: string | undefined | null): string | undefine
   // Get the base URL without /api
   const baseUrl = process.env.NODE_ENV === 'production' 
     ? window.location.origin
-    : 'http://localhost:5000';
+    : 'https://booksy-fkc6.onrender.com/';
   if (imageUrl.startsWith('/uploads')) return `${baseUrl}${imageUrl}`;
   return `${baseUrl}/uploads/${imageUrl}`;
 };

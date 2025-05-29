@@ -7,8 +7,8 @@ export type { User } from '../types/user';
 
 // API URL based on environment
 export const API_URL = process.env.NODE_ENV === 'production'
-  ? '/api'  // In production, use relative path since backend serves frontend
-  : 'http://localhost:5000/api';
+  ? 'https://booksy-fkc6.onrender.com/api'  // Use Render backend URL for production
+  : 'https://booksy-fkc6.onrender.com/api';
 
 export interface LoginCredentials {
   email: string;
