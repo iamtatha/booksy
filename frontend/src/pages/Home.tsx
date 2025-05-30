@@ -401,76 +401,100 @@ const Home: React.FunctionComponent = () => {
         )}
 
         {/* Books from Followed Users */}
-        {!followedBooksLoading && (
-          <>
-            {followedBooksError ? (
-              <Alert severity="error">{followedBooksError}</Alert>
-            ) : followedUsersBooks.length > 0 ? (
-              <>
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">From People You Follow</h2>
-                <Grid container spacing={3} sx={{ mb: 6 }}>
-                  {followedUsersBooks.map((item) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={item.book._id}>
-                      <Link to={`/books/${item.book._id}`} style={{ textDecoration: 'none' }}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                          <CardMedia
-                            component="img"
-                            image={item.book.coverImage}
-                            alt={item.book.title}
-                            sx={{ height: 180, objectFit: 'cover' }}
-                          />
-                          <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                              {item.book.title}
-                            </Typography>
-                            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                              by {item.book.author}
-                            </Typography>
-                            
-                            <Box sx={{ mt: 2 }}>
-                              <Box display="flex" alignItems="center" gap={1} mb={1}>
-                                <StarIcon className="h-5 w-5 text-yellow-500" />
-                                <Typography variant="body2" color="text.secondary">
-                                  {item.reviewCount} review{item.reviewCount !== 1 ? 's' : ''}
-                                </Typography>
-                                <ClockIcon className="h-5 w-5 ml-2" />
-                                <Typography variant="body2" color="text.secondary">
-                                  {item.readCount} read{item.readCount !== 1 ? 's' : ''}
-                                </Typography>
-                              </Box>
-
-                              <Box sx={{ mt: 2 }}>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                  Recent Activity:
-                                </Typography>
-                                <AvatarGroup max={3} sx={{ justifyContent: 'flex-start' }}>
-                                  {item.recentActivity.map((activity, index) => (
-                                    <Tooltip
-                                      key={index}
-                                      title={`${activity.user.username} ${activity.type === 'review' ? 'reviewed' : 'read'} this book`}
-                                    >
-                                      <Avatar
-                                        src={activity.user.profileImage}
-                                        alt={activity.user.username}
-                                        sx={{ width: 24, height: 24 }}
-                                      >
-                                        {activity.user.username[0]}
-                                      </Avatar>
-                                    </Tooltip>
-                                  ))}
-                                </AvatarGroup>
-                              </Box>
+        {(() => {
+          const user = JSON.parse(localStorage.getItem('user') || '{}');
+          const isLoggedIn = user._id;
+          
+          // Don't show section if user is not logged in
+          if (!isLoggedIn) {
+            return null;
+          }
+          
+          // Show loading state
+          if (followedBooksLoading) {
+            return (
+              <Box display="flex" justifyContent="center" alignItems="center" minHeight="120px">
+                <CircularProgress />
+              </Box>
+            );
+          }
+          
+          // Show error if there's an error
+          if (followedBooksError) {
+            return <Alert severity="error">{followedBooksError}</Alert>;
+          }
+          
+          // Don't show section if no followed users' books
+          if (followedUsersBooks.length === 0) {
+            return null;
+          }
+          
+          // Render the section with books
+          return (
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">From People You Follow</h2>
+              <Grid container spacing={3} sx={{ mb: 6 }}>
+                {followedUsersBooks.map((item) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={item.book._id}>
+                    <Link to={`/books/${item.book._id}`} style={{ textDecoration: 'none' }}>
+                      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <CardMedia
+                          component="img"
+                          image={item.book.coverImage}
+                          alt={item.book.title}
+                          sx={{ height: 180, objectFit: 'cover' }}
+                        />
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom>
+                            {item.book.title}
+                          </Typography>
+                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                            by {item.book.author}
+                          </Typography>
+                          
+                          <Box sx={{ mt: 2 }}>
+                            <Box display="flex" alignItems="center" gap={1} mb={1}>
+                              <StarIcon className="h-5 w-5 text-yellow-500" />
+                              <Typography variant="body2" color="text.secondary">
+                                {item.reviewCount} review{item.reviewCount !== 1 ? 's' : ''}
+                              </Typography>
+                              <ClockIcon className="h-5 w-5 ml-2" />
+                              <Typography variant="body2" color="text.secondary">
+                                {item.readCount} read{item.readCount !== 1 ? 's' : ''}
+                              </Typography>
                             </Box>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    </Grid>
-                  ))}
-                </Grid>
-              </>
-            ) : null}
-          </>
-        )}
+
+                            <Box sx={{ mt: 2 }}>
+                              <Typography variant="body2" color="text.secondary" gutterBottom>
+                                Recent Activity:
+                              </Typography>
+                              <AvatarGroup max={3} sx={{ justifyContent: 'flex-start' }}>
+                                {item.recentActivity.map((activity, index) => (
+                                  <Tooltip
+                                    key={index}
+                                    title={`${activity.user.username} ${activity.type === 'review' ? 'reviewed' : 'read'} this book`}
+                                  >
+                                    <Avatar
+                                      src={activity.user.profileImage}
+                                      alt={activity.user.username}
+                                      sx={{ width: 24, height: 24 }}
+                                    >
+                                      {activity.user.username[0]}
+                                    </Avatar>
+                                  </Tooltip>
+                                ))}
+                              </AvatarGroup>
+                            </Box>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </Grid>
+                ))}
+              </Grid>
+            </div>
+          );
+        })()}
 
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {books.map((book) => (

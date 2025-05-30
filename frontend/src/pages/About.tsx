@@ -497,7 +497,7 @@ const About: React.FC = () => {
                     },
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   }}
-                  href="https://github.com/sponsors"
+                  href="https://github.com/sponsors/iamtatha"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
