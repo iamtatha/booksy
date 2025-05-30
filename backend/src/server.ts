@@ -24,7 +24,8 @@ connectDB();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://grey-termite-833898.hostingersite.com",
-  "http://booksy.sbs"
+  "http://booksy.sbs",
+  "https://booksy.sbs"
 ];
 
 app.use(
