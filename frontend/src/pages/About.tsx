@@ -272,20 +272,7 @@ const About: React.FC = () => {
                     tech products, Tathagata envisioned a modern, user-friendly platform that would bridge 
                     the gap between readers, authors, and publishers.
                   </Typography>
-                  
-                  <Typography 
-                    paragraph 
-                    sx={{ 
-                      fontSize: { xs: '1rem', sm: '1.1rem' },
-                      lineHeight: 1.7,
-                      color: '#4a5568',
-                      mb: 4
-                    }}
-                  >
-                    The platform represents a perfect fusion of cutting-edge technology with deep understanding 
-                    of reader needs, resulting in an intuitive and engaging experience. Tathagata continues to 
-                    lead Booksy's development, constantly innovating and adding features based on community feedback.
-                  </Typography>
+
                   
                   <Box>
                     <Typography 
@@ -345,15 +332,16 @@ const About: React.FC = () => {
 
           <Grid item xs={12}>
             <Paper 
-              elevation={3} 
+              elevation={8} 
               sx={{ 
-                p: { xs: 3, sm: 4 }, 
-                bgcolor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                p: { xs: 4, sm: 6 }, 
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #1e40af 75%, #1e3a8a 100%)',
                 color: 'white',
                 textAlign: 'center',
                 position: 'relative',
                 overflow: 'hidden',
+                borderRadius: 3,
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -361,12 +349,29 @@ const About: React.FC = () => {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%)',
+                  background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(30, 64, 175, 0.95) 25%, rgba(59, 130, 246, 0.95) 50%, rgba(30, 64, 175, 0.95) 75%, rgba(30, 58, 138, 0.95) 100%)',
+                  backgroundSize: '400% 400%',
+                  animation: 'elegantGradient 8s ease infinite',
                   zIndex: 1,
+                },
+                '@keyframes elegantGradient': {
+                  '0%': { backgroundPosition: '0% 50%' },
+                  '50%': { backgroundPosition: '100% 50%' },
+                  '100%': { backgroundPosition: '0% 50%' },
                 },
                 '& > *': {
                   position: 'relative',
                   zIndex: 2,
+                },
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%)',
+                  zIndex: 1,
                 }
               }}
             >
@@ -375,58 +380,69 @@ const About: React.FC = () => {
                 gutterBottom
                 sx={{ 
                   fontSize: { xs: '1.75rem', sm: '2.125rem' },
-                  fontWeight: 'bold',
-                  mb: 2
+                  fontWeight: 600,
+                  mb: 2,
+                  letterSpacing: '-0.025em',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}
               >
-                💝 Support Booksy
+                ✨ Support Booksy
               </Typography>
               <Typography 
                 variant="h6" 
                 paragraph
                 sx={{ 
                   fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                  mb: 3,
-                  opacity: 0.95
+                  mb: 4,
+                  opacity: 0.95,
+                  fontWeight: 400,
+                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
                 }}
               >
                 Help Us Keep the Books Flowing!
               </Typography>
-              <Typography paragraph sx={{ fontSize: { xs: '1rem', sm: '1.1rem' }, mb: 3 }}>
-                Booksy is an independent, unfunded project built with passion for the book community. 
-                Running our servers, maintaining the database, and keeping the platform secure comes with ongoing costs.
-              </Typography>
-              <Typography paragraph sx={{ fontSize: { xs: '1rem', sm: '1.1rem' }, mb: 3 }}>
+ 
+              <Typography paragraph sx={{ fontSize: { xs: '1rem', sm: '1.1rem' }, mb: 4, opacity: 0.9, lineHeight: 1.6 }}>
                 Your donation, no matter how small, helps us:
               </Typography>
               <Box sx={{ 
                 display: 'flex', 
                 flexDirection: { xs: 'column', sm: 'row' },
                 justifyContent: 'center',
-                gap: 2,
-                mb: 3,
+                gap: 3,
+                mb: 4,
                 '& > div': {
                   flex: 1,
-                  maxWidth: { sm: '200px' }
+                  maxWidth: { sm: '220px' },
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    bgcolor: 'rgba(255, 255, 255, 0.15)',
+                    transform: 'translateY(-2px)',
+                  }
                 }
               }}>
                 <Box>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>🖥️ Server Hosting</Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>Keep the platform running 24/7</Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>🖥️ Server Hosting</Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.9rem' }}>Keep the platform running 24/7</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>🗄️ Database Storage</Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>Store your books and reviews safely</Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>🗄️ Database Storage</Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.9rem' }}>Store your books and reviews safely</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>🔒 Security & Updates</Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>Maintain a secure experience</Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>🔒 Security & Updates</Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.9rem' }}>Maintain a secure experience</Typography>
                 </Box>
               </Box>
               <Box sx={{ 
                 display: 'flex', 
                 flexDirection: { xs: 'column', sm: 'row' },
-                gap: 2,
+                gap: 3,
                 justifyContent: 'center',
                 alignItems: 'center',
                 mt: 4
@@ -435,45 +451,53 @@ const About: React.FC = () => {
                   variant="contained"
                   size="large"
                   sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.2)',
+                    bgcolor: 'rgba(255, 255, 255, 0.15)',
                     color: 'white',
-                    fontWeight: 'bold',
-                    px: 4,
-                    py: 1.5,
+                    fontWeight: 600,
+                    px: 5,
+                    py: 2,
                     borderRadius: 3,
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    backdropFilter: 'blur(20px)',
+                    border: '2px solid rgba(255, 255, 255, 0.2)',
+                    textTransform: 'none',
+                    fontSize: '1.1rem',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                     '&:hover': {
-                      bgcolor: 'rgba(255, 255, 255, 0.3)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+                      bgcolor: 'rgba(255, 255, 255, 0.25)',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+                      borderColor: 'rgba(255, 255, 255, 0.4)',
                     },
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   }}
-                  href="https://www.paypal.com/donate" // Replace with your actual donation link
+                  href="upi://pay?pa=tathagata2403-1@okhdfcbank&pn=Tathagata%20Dey&aid=uGICAgIDNpYCPaw"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  💳 Donate via PayPal
+                  💳 Donate via UPI
                 </Button>
                 <Button
                   variant="outlined"
                   size="large"
                   sx={{
                     color: 'white',
-                    borderColor: 'rgba(255, 255, 255, 0.5)',
-                    fontWeight: 'bold',
-                    px: 4,
-                    py: 1.5,
+                    borderColor: 'rgba(255, 255, 255, 0.4)',
+                    fontWeight: 600,
+                    px: 5,
+                    py: 2,
                     borderRadius: 3,
+                    textTransform: 'none',
+                    fontSize: '1.1rem',
+                    borderWidth: '2px',
                     '&:hover': {
-                      borderColor: 'white',
+                      borderColor: 'rgba(255, 255, 255, 0.8)',
                       bgcolor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
                     },
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   }}
-                  href="https://github.com/sponsors" // Replace with your GitHub sponsors link
+                  href="https://github.com/sponsors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -483,9 +507,11 @@ const About: React.FC = () => {
               <Typography 
                 variant="body2" 
                 sx={{ 
-                  mt: 3, 
-                  opacity: 0.8,
-                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                  mt: 4, 
+                  opacity: 0.85,
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                  fontStyle: 'italic',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
                 }}
               >
                 Every contribution helps us maintain this free platform for book lovers worldwide. Thank you! 🙏
@@ -506,10 +532,7 @@ const About: React.FC = () => {
               </Typography>
               <Typography paragraph>
                 Booksy is dedicated to creating a vibrant community where book lovers can discover, 
-                share, and discuss their favorite reads. We believe that books have the power to 
-                connect people, inspire ideas, and transform lives.
-              </Typography>
-              <Typography paragraph>
+                share, and discuss their favorite reads. 
                 Our platform brings together readers, authors, and sellers in one place, making it 
                 easier than ever to explore new books, share recommendations, and engage in meaningful 
                 discussions about literature.
