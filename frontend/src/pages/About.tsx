@@ -532,7 +532,10 @@ const About: React.FC = () => {
               </Typography>
               <Typography paragraph>
                 Booksy is dedicated to creating a vibrant community where book lovers can discover, 
-                share, and discuss their favorite reads. 
+                share, and discuss their favorite reads. We believe that books have the power to 
+                connect people, inspire ideas, and transform lives.
+              </Typography>
+              <Typography paragraph>
                 Our platform brings together readers, authors, and sellers in one place, making it 
                 easier than ever to explore new books, share recommendations, and engage in meaningful 
                 discussions about literature.
