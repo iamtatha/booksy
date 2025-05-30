@@ -68,18 +68,17 @@ export const createBook = async (req: AuthenticatedRequest, res: Response): Prom
       role // 'author' or 'publisher'
     } = req.body;
 
-    if (!title) {
-      res.status(400).json({ message: 'Missing required fields' });
+    // Validate required fields
+    if (!title || !author || !publisher || !publishedDate || !language || !edition || !pageCount || !category) {
+      res.status(400).json({ message: 'Missing required fields: title, author, publisher, publishedDate, language, edition, pageCount, and category are required' });
       return;
     }
 
-    // Create the book
-    const newBook = new Book({
+    // Create the book object with only non-empty optional fields
+    const bookData: any = {
       title,
       author,
       author_username,
-      description,
-      coverImage,
       averageRating,
       totalReviews,
       publisher,
@@ -87,14 +86,30 @@ export const createBook = async (req: AuthenticatedRequest, res: Response): Prom
       publishedDate,
       language,
       edition,
-      pageCount,
-      amazonLink,
-      isbn,
+      pageCount: Number(pageCount),
       genre,
       category,
       listed_by_username,
-    });
+    };
 
+    // Only add optional fields if they have values
+    if (description && description.trim()) {
+      bookData.description = description.trim();
+    }
+    
+    if (coverImage && coverImage.trim()) {
+      bookData.coverImage = coverImage.trim();
+    }
+    
+    if (amazonLink && amazonLink.trim()) {
+      bookData.amazonLink = amazonLink.trim();
+    }
+    
+    if (isbn && isbn.trim()) {
+      bookData.isbn = isbn.trim();
+    }
+
+    const newBook = new Book(bookData);
     const savedBook = await newBook.save();
 
     // If user is authenticated, add book to their createdBookList or listedBooks
@@ -113,7 +128,14 @@ export const createBook = async (req: AuthenticatedRequest, res: Response): Prom
     res.status(201).json({ ...savedBook.toObject(), role });
   } catch (error) {
     console.error('Error creating book:', error);
-    res.status(400).json({ message: 'Error creating book', error });
+    
+    // Handle duplicate ISBN error
+    if (error instanceof Error && error.message.includes('duplicate key error') && error.message.includes('isbn')) {
+      res.status(400).json({ message: 'A book with this ISBN already exists' });
+      return;
+    }
+    
+    res.status(400).json({ message: 'Error creating book', error: error instanceof Error ? error.message : 'Unknown error' });
   }
 };
 

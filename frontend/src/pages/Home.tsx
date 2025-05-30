@@ -45,7 +45,12 @@ const Home: React.FunctionComponent = () => {
   const [popularError, setPopularError] = React.useState<string | null>(null);
   const [searchResults, setSearchResults] = React.useState<Book[]>([]);
   const [followedUsersBooks, setFollowedUsersBooks] = React.useState<FollowedUserBookActivity[]>([]);
-  const [followedBooksLoading, setFollowedBooksLoading] = React.useState(true);
+  
+  // Initialize loading state based on whether user is logged in
+  const [followedBooksLoading, setFollowedBooksLoading] = React.useState(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return !!user._id; // Only set to true if user is logged in
+  });
   const [followedBooksError, setFollowedBooksError] = React.useState<string | null>(null);
 
   const navigation = [
@@ -106,10 +111,26 @@ const Home: React.FunctionComponent = () => {
   }, []);
 
   React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const token = localStorage.getItem('token');
+    console.log('Current user:', user);
+    console.log('User ID exists:', !!user._id);
+    console.log('Token exists:', !!token);
+    
+    // Only proceed if user is logged in AND has a valid token
+    if (!user._id || !token) {
+      console.log('User not properly logged in (missing user ID or token), skipping followed users books fetch');
+      setFollowedBooksLoading(false);
+      setFollowedBooksError(null);
+      return; // Exit early if no user or no token
+    }
+
+    console.log('User is logged in with valid token, fetching followed users books');
     const fetchFollowedUsersBooks = async () => {
       try {
         setFollowedBooksLoading(true);
         setFollowedBooksError(null);
+        console.log('Making API call to getFollowedUsersBooks');
         const data = await userApi.getFollowedUsersBooks();
         console.log('Fetched followed users books:', data);
         setFollowedUsersBooks(data);
@@ -121,13 +142,7 @@ const Home: React.FunctionComponent = () => {
       }
     };
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    console.log('Current user:', user);
-    if (user._id) {
-      fetchFollowedUsersBooks();
-    } else {
-      setFollowedBooksLoading(false);
-    }
+    fetchFollowedUsersBooks();
   }, []);
 
   const handleHeroSearch = () => {
@@ -339,19 +354,23 @@ const Home: React.FunctionComponent = () => {
             <h2 className="text-2xl font-bold mb-6 text-gray-900">Search Results</h2>
             <Grid container spacing={3} sx={{ mb: 6 }}>
               {searchResults.map((book) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={book._id}>
+                <Grid item xs={6} sm={6} md={4} lg={3} key={book._id}>
                   <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
                     <CardMedia
                       component="img"
                       image={book.coverImage}
                       alt={book.title}
-                      sx={{ height: 180, objectFit: 'cover' }}
+                      sx={{ height: { xs: 160, sm: 180 }, objectFit: 'cover' }}
                     />
-                    <CardContent sx={{ flex: 1 }}>
-                      <Typography variant="h6" gutterBottom>{book.title}</Typography>
-                      <Typography variant="subtitle2" color="text.secondary">by {book.author}</Typography>
+                    <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2 } }}>
+                      <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '0.875rem', sm: '1.25rem' } }}>
+                        {book.title}
+                      </Typography>
+                      <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                        by {book.author}
+                      </Typography>
                       <Box display="flex" alignItems="center" gap={1} mt={1}>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           {book.averageRating?.toFixed(1) || 'N/A'} / 5
                         </Typography>
                       </Box>
@@ -375,20 +394,24 @@ const Home: React.FunctionComponent = () => {
         ) : (
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {popularBooks.map(({ book, reviewCount }) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={book._id}>
+              <Grid item xs={6} sm={6} md={4} lg={3} key={book._id}>
                 <Link to={`/books/${book._id}`} className="group" style={{ textDecoration: 'none' }}>
                   <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
                     <CardMedia
                       component="img"
                       image={book.coverImage}
                       alt={book.title}
-                      sx={{ height: 180, objectFit: 'cover' }}
+                      sx={{ height: { xs: 160, sm: 180 }, objectFit: 'cover' }}
                     />
-                    <CardContent sx={{ flex: 1 }}>
-                      <Typography variant="h6" gutterBottom>{book.title}</Typography>
-                      <Typography variant="subtitle2" color="text.secondary">by {book.author}</Typography>
+                    <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2 } }}>
+                      <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '0.875rem', sm: '1.25rem' } }}>
+                        {book.title}
+                      </Typography>
+                      <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                        by {book.author}
+                      </Typography>
                       <Box display="flex" alignItems="center" gap={1} mt={1}>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                           {reviewCount} review{reviewCount !== 1 ? 's' : ''} this week
                         </Typography>
                       </Box>
@@ -435,37 +458,37 @@ const Home: React.FunctionComponent = () => {
               <h2 className="text-2xl font-bold mb-6 text-gray-900">From People You Follow</h2>
               <Grid container spacing={3} sx={{ mb: 6 }}>
                 {followedUsersBooks.map((item) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={item.book._id}>
+                  <Grid item xs={6} sm={6} md={4} lg={3} key={item.book._id}>
                     <Link to={`/books/${item.book._id}`} style={{ textDecoration: 'none' }}>
                       <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                         <CardMedia
                           component="img"
                           image={item.book.coverImage}
                           alt={item.book.title}
-                          sx={{ height: 180, objectFit: 'cover' }}
+                          sx={{ height: { xs: 160, sm: 180 }, objectFit: 'cover' }}
                         />
-                        <CardContent>
-                          <Typography variant="h6" gutterBottom>
+                        <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                          <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '0.875rem', sm: '1.25rem' } }}>
                             {item.book.title}
                           </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                             by {item.book.author}
                           </Typography>
                           
                           <Box sx={{ mt: 2 }}>
-                            <Box display="flex" alignItems="center" gap={1} mb={1}>
-                              <StarIcon className="h-5 w-5 text-yellow-500" />
-                              <Typography variant="body2" color="text.secondary">
+                            <Box display="flex" alignItems="center" gap={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+                              <StarIcon className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
+                              <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                                 {item.reviewCount} review{item.reviewCount !== 1 ? 's' : ''}
                               </Typography>
-                              <ClockIcon className="h-5 w-5 ml-2" />
-                              <Typography variant="body2" color="text.secondary">
+                              <ClockIcon className="h-4 w-4 sm:h-5 sm:w-5 ml-2 text-gray-500" />
+                              <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                                 {item.readCount} read{item.readCount !== 1 ? 's' : ''}
                               </Typography>
                             </Box>
 
-                            <Box sx={{ mt: 2 }}>
-                              <Typography variant="body2" color="text.secondary" gutterBottom>
+                            <Box sx={{ mt: 2, display: { xs: 'none', sm: 'block' } }}>
+                              <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontSize: '0.75rem' }}>
                                 Recent Activity:
                               </Typography>
                               <AvatarGroup max={3} sx={{ justifyContent: 'flex-start' }}>
@@ -477,7 +500,7 @@ const Home: React.FunctionComponent = () => {
                                     <Avatar
                                       src={activity.user.profileImage}
                                       alt={activity.user.username}
-                                      sx={{ width: 24, height: 24 }}
+                                      sx={{ width: 20, height: 20 }}
                                     >
                                       {activity.user.username[0]}
                                     </Avatar>
@@ -496,7 +519,7 @@ const Home: React.FunctionComponent = () => {
           );
         })()}
 
-        <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <div className="grid grid-cols-2 gap-y-6 gap-x-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
           {books.map((book) => (
             <Link key={book._id} to={`/books/${book._id}`} className="group">
               <div className="aspect-w-3 aspect-h-4 rounded-lg overflow-hidden bg-gray-100">
@@ -506,16 +529,18 @@ const Home: React.FunctionComponent = () => {
                   className="w-full h-full object-center object-cover transform transition-transform group-hover:scale-105"
                 />
               </div>
-              <div className="mt-4 flex flex-col">
-                <h3 className="text-lg font-medium text-gray-900 group-hover:text-indigo-600">
+              <div className="mt-2 sm:mt-4 flex flex-col">
+                <h3 className="text-sm sm:text-lg font-medium text-gray-900 group-hover:text-indigo-600 line-clamp-2">
                   {book.title}
                 </h3>
-                <p className="mt-1 text-sm text-gray-500">{book.author}</p>
-                <p className="mt-1 text-sm text-gray-500">{book.description.substring(0, 100)}...</p>
-                <div className="mt-2 flex items-center">
-                  <span className="text-yellow-400">★</span>
-                  <span className="ml-1 text-sm text-gray-500">{book.averageRating.toFixed(1)}</span>
-                  <span className="ml-2 text-sm text-gray-500">({book.totalReviews} reviews)</span>
+                <p className="mt-1 text-xs sm:text-sm text-gray-500">{book.author}</p>
+                <p className="mt-1 text-xs sm:text-sm text-gray-500 line-clamp-2 sm:line-clamp-none">
+                  {book.description.substring(0, 100)}...
+                </p>
+                <div className="mt-1 sm:mt-2 flex items-center">
+                  <span className="text-yellow-400 text-sm">★</span>
+                  <span className="ml-1 text-xs sm:text-sm text-gray-500">{book.averageRating.toFixed(1)}</span>
+                  <span className="ml-1 sm:ml-2 text-xs sm:text-sm text-gray-500">({book.totalReviews} reviews)</span>
                 </div>
               </div>
             </Link>
@@ -539,7 +564,7 @@ const Home: React.FunctionComponent = () => {
             {recentReviews.map((review) => {
               const book = typeof review.book === 'object' ? review.book : null;
               return (
-                <Grid item xs={12} md={6} lg={3} key={review._id}>
+                <Grid item xs={6} sm={6} md={6} lg={3} key={review._id}>
                   <Link to={`/books/${book?._id}`} className="group" style={{ textDecoration: 'none' }}>
                     <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                       {book && (
@@ -547,37 +572,44 @@ const Home: React.FunctionComponent = () => {
                           component="img"
                           image={book.coverImage}
                           alt={book.title}
-                          sx={{ height: 180, objectFit: 'cover' }}
+                          sx={{ height: { xs: 140, sm: 160, md: 180 }, objectFit: 'cover' }}
                         />
                       )}
-                      <CardContent sx={{ flex: 1 }}>
+                      <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2 } }}>
                         <Box display="flex" alignItems="center" gap={1} mb={1}>
                           <Avatar
                             src={review.user.profileImage}
                             alt={review.user.username}
-                            sx={{ width: 32, height: 32 }}
+                            sx={{ width: { xs: 24, sm: 32 }, height: { xs: 24, sm: 32 } }}
                           >
                             {review.user.username[0].toUpperCase()}
                           </Avatar>
-                          <Typography variant="subtitle2" color="text.primary">
+                          <Typography variant="subtitle2" color="text.primary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                             {review.user.username}
                           </Typography>
                         </Box>
                         {book && (
-                          <Typography variant="h6" gutterBottom>
+                          <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '0.875rem', sm: '1.25rem' } }}>
                             {book.title}
                           </Typography>
                         )}
                         <Box display="flex" alignItems="center" gap={1} mb={1}>
-                          <Rating value={review.rating} readOnly size="small" />
-                          <Typography variant="body2" color="text.secondary">
+                          <Rating value={review.rating} readOnly size="small" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                             {review.rating}/5
                           </Typography>
                         </Box>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" color="text.secondary" gutterBottom sx={{ 
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          display: '-webkit-box',
+                          WebkitLineClamp: { xs: 2, sm: 3 },
+                          WebkitBoxOrient: 'vertical'
+                        }}>
                           {review.comment}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                           {new Date(review.createdAt).toLocaleDateString()}
                         </Typography>
                       </CardContent>

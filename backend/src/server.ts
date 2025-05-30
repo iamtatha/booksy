@@ -23,7 +23,8 @@ connectDB();
 // Middleware
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://grey-termite-833898.hostingersite.com"
+  "https://grey-termite-833898.hostingersite.com",
+  "http://booksy.sbs"
 ];
 
 app.use(

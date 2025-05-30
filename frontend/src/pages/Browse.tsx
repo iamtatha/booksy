@@ -20,6 +20,9 @@ import {
   CircularProgress,
   Alert,
   Collapse,
+  Paper,
+  Chip,
+  Badge,
 } from '@mui/material';
 import { 
   MagnifyingGlassIcon, 
@@ -28,10 +31,14 @@ import {
   BookOpenIcon,
   UserIcon,
   BookmarkIcon,
-  Bars3Icon
+  Bars3Icon,
+  FunnelIcon,
+  StarIcon,
+  ClockIcon
 } from '@heroicons/react/24/outline';
 import { bookApi, reviewApi } from '../services/api';
 import { Book } from '../types/book';
+import Logo from '../components/Logo';
 
 const genres = [
   'Fiction', 'Non-Fiction', 'Fantasy', 'Science Fiction', 'Mystery', 'Romance', 'Biography', 'History',
@@ -57,6 +64,7 @@ const ratings = [5, 4, 3, 2, 1];
 
 const Browse: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = React.useState(false);
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState('');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -277,285 +285,495 @@ const Browse: React.FC = () => {
       display: 'flex', 
       flexDirection: 'column',
       minHeight: '100vh',
-      bgcolor: '#f7f6f2'
+      bgcolor: '#fafafa'
     }}>
-      <Box sx={{ flex: 1 }}>
-        <nav className="bg-white shadow-sm">
+      {/* Enhanced Navigation */}
+      <Paper elevation={0} sx={{ 
+        borderBottom: '1px solid', 
+        borderColor: 'divider',
+        backgroundColor: 'white'
+      }}>
+        <nav>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
-              {/* Logo and Desktop Navigation */}
-              <div className="flex">
+              <div className="flex items-center">
                 <div className="flex-shrink-0 flex items-center">
-                  <Link to="/" className="text-2xl font-bold text-gray-900">
-                    Book Review
-                  </Link>
+                  <Logo />
                 </div>
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
                   {navigation.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                      className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200"
                     >
-                      <item.icon className="h-5 w-5 mr-1.5" />
+                      <item.icon className="h-5 w-5 mr-2" />
                       {item.name}
                     </Link>
                   ))}
                 </div>
               </div>
 
-              {/* Profile Icon */}
-              <div className="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
-                <Button className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center" component={Link} to="/profile">
-                  <UserIcon className="h-5 w-5 text-gray-500" />
+              <div className="flex items-center">
+                <Button 
+                  sx={{ 
+                    minWidth: 40,
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    bgcolor: 'grey.100',
+                    '&:hover': { bgcolor: 'grey.200' }
+                  }} 
+                  component={Link} 
+                  to="/profile"
+                >
+                  <UserIcon className="h-5 w-5 text-gray-600" />
                 </Button>
               </div>
 
-              {/* Mobile menu button */}
               <div className="flex items-center sm:hidden">
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                <Button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  sx={{ minWidth: 40, width: 40, height: 40 }}
                 >
-                  <span className="sr-only">Open main menu</span>
                   <Bars3Icon className="h-6 w-6" />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
 
           {/* Mobile menu */}
-          <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
-            <div className="pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
+          <Collapse in={isMenuOpen} className="sm:hidden">
+            <Paper elevation={1} sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
+              <div className="py-2 space-y-1">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="flex items-center px-4 py-3 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <item.icon className="h-5 w-5 mr-3" />
+                    {item.name}
+                  </Link>
+                ))}
                 <Link
-                  key={item.name}
-                  to={item.href}
-                  className="flex items-center px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                  to="/profile"
+                  className="flex items-center px-4 py-3 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <item.icon className="h-5 w-5 mr-3" />
-                  {item.name}
+                  <UserIcon className="h-5 w-5 mr-3" />
+                  Profile
                 </Link>
-              ))}
-              <Link
-                to="/profile"
-                className="flex items-center px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <UserIcon className="h-5 w-5 mr-3" />
-                Profile
-              </Link>
-            </div>
-          </div>
+              </div>
+            </Paper>
+          </Collapse>
         </nav>
+      </Paper>
 
-        <Box className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-          <Box className="flex flex-col md:flex-row gap-8">
-            {/* Sidebar Filters */}
-            <Box className="bg-white rounded-xl shadow p-6 w-full md:w-80 mb-6 md:mb-0" sx={{ minWidth: 240 }}>
-              <Typography variant="h6" className="font-bold mb-4">Filters</Typography>
-              
-              {/* Genre Filter */}
-              <Box className="mb-4">
-                <Box 
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => setExpandedFilters({...expandedFilters, genre: !expandedFilters.genre})}
-                >
-                  <Typography variant="subtitle2" className="font-semibold">Genre</Typography>
-                  {expandedFilters.genre ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
-                </Box>
-                <Collapse in={expandedFilters.genre}>
-                  <Box className="mt-2">
-                {genres.map((genre) => (
-                  <FormControlLabel
-                    key={genre}
-                    control={
-                      <Checkbox
-                        checked={selectedGenres.includes(genre)}
-                        onChange={() => setSelectedGenres(selectedGenres.includes(genre)
-                          ? selectedGenres.filter(g => g !== genre)
-                          : [...selectedGenres, genre])}
-                      />
-                    }
-                    label={genre}
-                  />
-                ))}
-                  </Box>
-                </Collapse>
-              </Box>
-              <Divider className="my-2" />
+      {/* Enhanced Hero Section */}
 
-              {/* Category Filter */}
-              <Box className="mb-4">
-                <Box 
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => setExpandedFilters({...expandedFilters, category: !expandedFilters.category})}
-                >
-                  <Typography variant="subtitle2" className="font-semibold">Category</Typography>
-                  {expandedFilters.category ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
-                </Box>
-                <Collapse in={expandedFilters.category}>
-                  <Box className="mt-2">
-                    {categories.map((category) => (
-                      <FormControlLabel
-                        key={category}
-                        control={
-                          <Checkbox
-                            checked={selectedCategories.includes(category)}
-                            onChange={() => setSelectedCategories(selectedCategories.includes(category)
-                              ? selectedCategories.filter(c => c !== category)
-                              : [...selectedCategories, category])}
-                          />
-                        }
-                        label={category}
-                      />
-                    ))}
-                  </Box>
-                </Collapse>
-              </Box>
-              <Divider className="my-2" />
 
-              {/* Language Filter */}
-              <Box className="mb-4">
-                <Box 
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => setExpandedFilters({...expandedFilters, language: !expandedFilters.language})}
-                >
-                  <Typography variant="subtitle2" className="font-semibold">Language</Typography>
-                  {expandedFilters.language ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
-                </Box>
-                <Collapse in={expandedFilters.language}>
-                  <Box className="mt-2">
-                    {languages.map((language) => (
-                      <FormControlLabel
-                        key={language}
-                        control={
-                          <Checkbox
-                            checked={selectedLanguages.includes(language)}
-                            onChange={() => setSelectedLanguages(selectedLanguages.includes(language)
-                              ? selectedLanguages.filter(l => l !== language)
-                              : [...selectedLanguages, language])}
-                          />
-                        }
-                        label={language}
-                      />
-                    ))}
-                  </Box>
-                </Collapse>
+      <Box className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Box className="flex flex-col lg:flex-row gap-8">
+          {/* Enhanced Sidebar Filters */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              width: { xs: '100%', lg: 320 },
+              p: 3,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              height: 'fit-content',
+              position: { lg: 'sticky' },
+              top: 24,
+              display: { xs: isMobileFiltersOpen ? 'block' : 'none', lg: 'block' }
+            }}
+          >
+            <Box className="flex items-center justify-between mb-4">
+              <Box className="flex items-center">
+                <FunnelIcon className="h-5 w-5 mr-2 text-gray-600" />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                  Filters
+                </Typography>
               </Box>
-              <Divider className="my-2" />
-
-              {/* Page Count Filter */}
-              <Box className="mb-4">
-                <Box 
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => setExpandedFilters({...expandedFilters, pageCount: !expandedFilters.pageCount})}
-                >
-                  <Typography variant="subtitle2" className="font-semibold">Page Count</Typography>
-                  {expandedFilters.pageCount ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
-                </Box>
-                <Collapse in={expandedFilters.pageCount}>
-                  <Box className="mt-2">
-                    {pageCountRanges.map((range) => (
-                      <FormControlLabel
-                        key={range.label}
-                        control={
-                          <Checkbox
-                            checked={selectedPageRange?.min === range.min && selectedPageRange?.max === range.max}
-                            onChange={() => setSelectedPageRange(
-                              selectedPageRange?.min === range.min && selectedPageRange?.max === range.max
-                                ? null
-                                : { min: range.min, max: range.max }
-                            )}
-                          />
-                        }
-                        label={range.label}
-                      />
-                    ))}
-                  </Box>
-                </Collapse>
-              </Box>
-              <Divider className="my-2" />
-
-              {/* Rating Filter */}
-              <Box className="mb-4">
-                <Box 
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => setExpandedFilters({...expandedFilters, rating: !expandedFilters.rating})}
-                >
-                  <Typography variant="subtitle2" className="font-semibold">Rating</Typography>
-                  {expandedFilters.rating ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
-                </Box>
-                <Collapse in={expandedFilters.rating}>
-                  <Box className="mt-2">
-                {ratings.map((r) => (
-                  <FormControlLabel
-                    key={r}
-                    control={
-                      <Checkbox
-                        checked={selectedRating === r}
-                        onChange={() => setSelectedRating(selectedRating === r ? null : r)}
-                      />
-                    }
-                    label={`${r}+ Stars`}
-                  />
-                ))}
-                  </Box>
-                </Collapse>
-              </Box>
-              <Divider className="my-2" />
-
-              {/* Year Range Filter */}
-              <Box className="mb-4">
-                <Box 
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => setExpandedFilters({...expandedFilters, year: !expandedFilters.year})}
-                >
-                  <Typography variant="subtitle2" className="font-semibold">Publication Year</Typography>
-                  {expandedFilters.year ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
-                </Box>
-                <Collapse in={expandedFilters.year}>
-                  <Box className="mt-2 flex gap-2">
-                <TextField
-                  size="small"
-                  type="number"
-                  value={yearRange[0]}
-                  onChange={e => setYearRange([+e.target.value, yearRange[1]])}
-                  sx={{ width: 80 }}
-                />
-                <Typography variant="body2" className="self-center">to</Typography>
-                <TextField
-                  size="small"
-                  type="number"
-                  value={yearRange[1]}
-                  onChange={e => setYearRange([yearRange[0], +e.target.value])}
-                  sx={{ width: 80 }}
-                />
-              </Box>
-                </Collapse>
-              </Box>
-
-              <Button 
-                variant="contained" 
-                color="primary" 
-                fullWidth 
-                sx={{ mt: 2, borderRadius: 2 }}
-                onClick={handleApplyFilters}
-                disabled={loading}
+              <Button
+                sx={{ 
+                  display: { xs: 'block', lg: 'none' },
+                  minWidth: 'auto',
+                  p: 1
+                }}
+                onClick={() => setIsMobileFiltersOpen(false)}
               >
-                {loading ? <CircularProgress size={24} /> : 'Apply Filters'}
+                <ChevronUpIcon className="h-5 w-5" />
               </Button>
             </Box>
+            
+            {/* Genre Filter */}
+            <Box className="mb-4">
+              <Box 
+                className="flex justify-between items-center cursor-pointer py-2"
+                onClick={() => setExpandedFilters({...expandedFilters, genre: !expandedFilters.genre})}
+                sx={{ 
+                  '&:hover': { bgcolor: 'grey.50' },
+                  borderRadius: 1,
+                  px: 1
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  Genre
+                </Typography>
+                <Badge badgeContent={selectedGenres.length || 0} color="primary">
+                  {expandedFilters.genre ? 
+                    <ChevronUpIcon className="h-4 w-4 text-gray-500" /> : 
+                    <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                  }
+                </Badge>
+              </Box>
+              <Collapse in={expandedFilters.genre}>
+                <Box className="mt-2 max-h-48 overflow-y-auto">
+                  {genres.map((genre) => (
+                    <FormControlLabel
+                      key={genre}
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={selectedGenres.includes(genre)}
+                          onChange={() => setSelectedGenres(selectedGenres.includes(genre)
+                            ? selectedGenres.filter(g => g !== genre)
+                            : [...selectedGenres, genre])}
+                          sx={{ py: 0.25 }}
+                        />
+                      }
+                      label={<Typography variant="body2" sx={{ fontSize: '0.875rem' }}>{genre}</Typography>}
+                      sx={{ 
+                        display: 'flex', 
+                        width: '100%',
+                        ml: 0, 
+                        mr: 0,
+                        my: 0.25,
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '0.875rem'
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Collapse>
+            </Box>
 
-            {/* Main Content */}
-            <Box className="flex-1">
-              <Typography variant="h4" className="font-bold mb-4">Browse Books</Typography>
-              <Box className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+            <Divider sx={{ my: 2 }} />
+
+            {/* Category Filter */}
+            <Box className="mb-4">
+              <Box 
+                className="flex justify-between items-center cursor-pointer py-2"
+                onClick={() => setExpandedFilters({...expandedFilters, category: !expandedFilters.category})}
+                sx={{ 
+                  '&:hover': { bgcolor: 'grey.50' },
+                  borderRadius: 1,
+                  px: 1
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  Category
+                </Typography>
+                <Badge badgeContent={selectedCategories.length || 0} color="primary">
+                  {expandedFilters.category ? 
+                    <ChevronUpIcon className="h-4 w-4 text-gray-500" /> : 
+                    <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                  }
+                </Badge>
+              </Box>
+              <Collapse in={expandedFilters.category}>
+                <Box className="mt-2 max-h-48 overflow-y-auto">
+                  {categories.map((category) => (
+                    <FormControlLabel
+                      key={category}
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={selectedCategories.includes(category)}
+                          onChange={() => setSelectedCategories(selectedCategories.includes(category)
+                            ? selectedCategories.filter(c => c !== category)
+                            : [...selectedCategories, category])}
+                          sx={{ py: 0.25 }}
+                        />
+                      }
+                      label={<Typography variant="body2" sx={{ fontSize: '0.875rem' }}>{category}</Typography>}
+                      sx={{ 
+                        display: 'flex', 
+                        width: '100%',
+                        ml: 0, 
+                        mr: 0,
+                        my: 0.25,
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '0.875rem'
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Collapse>
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            {/* Language Filter */}
+            <Box className="mb-4">
+              <Box 
+                className="flex justify-between items-center cursor-pointer py-2"
+                onClick={() => setExpandedFilters({...expandedFilters, language: !expandedFilters.language})}
+                sx={{ 
+                  '&:hover': { bgcolor: 'grey.50' },
+                  borderRadius: 1,
+                  px: 1
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  Language
+                </Typography>
+                <Badge badgeContent={selectedLanguages.length || 0} color="primary">
+                  {expandedFilters.language ? 
+                    <ChevronUpIcon className="h-4 w-4 text-gray-500" /> : 
+                    <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                  }
+                </Badge>
+              </Box>
+              <Collapse in={expandedFilters.language}>
+                <Box className="mt-2 max-h-48 overflow-y-auto">
+                  {languages.map((language) => (
+                    <FormControlLabel
+                      key={language}
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={selectedLanguages.includes(language)}
+                          onChange={() => setSelectedLanguages(selectedLanguages.includes(language)
+                            ? selectedLanguages.filter(l => l !== language)
+                            : [...selectedLanguages, language])}
+                          sx={{ py: 0.25 }}
+                        />
+                      }
+                      label={<Typography variant="body2" sx={{ fontSize: '0.875rem' }}>{language}</Typography>}
+                      sx={{ 
+                        display: 'flex', 
+                        width: '100%',
+                        ml: 0, 
+                        mr: 0,
+                        my: 0.25,
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '0.875rem'
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Collapse>
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            {/* Rating Filter */}
+            <Box className="mb-4">
+              <Box 
+                className="flex justify-between items-center cursor-pointer py-2"
+                onClick={() => setExpandedFilters({...expandedFilters, rating: !expandedFilters.rating})}
+                sx={{ 
+                  '&:hover': { bgcolor: 'grey.50' },
+                  borderRadius: 1,
+                  px: 1
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  Rating
+                </Typography>
+                <Badge badgeContent={selectedRating ? 1 : 0} color="primary">
+                  {expandedFilters.rating ? 
+                    <ChevronUpIcon className="h-4 w-4 text-gray-500" /> : 
+                    <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                  }
+                </Badge>
+              </Box>
+              <Collapse in={expandedFilters.rating}>
+                <Box className="mt-2">
+                  {ratings.map((r) => (
+                    <FormControlLabel
+                      key={r}
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={selectedRating === r}
+                          onChange={() => setSelectedRating(selectedRating === r ? null : r)}
+                          sx={{ py: 0.25 }}
+                        />
+                      }
+                      label={
+                        <Box className="flex items-center">
+                          <Typography variant="body2" sx={{ mr: 1, fontSize: '0.875rem' }}>{r}+</Typography>
+                          {[...Array(r)].map((_, i) => (
+                            <StarIcon key={i} className="h-3 w-3 text-yellow-400" />
+                          ))}
+                        </Box>
+                      }
+                      sx={{ 
+                        display: 'flex', 
+                        width: '100%',
+                        ml: 0, 
+                        mr: 0,
+                        my: 0.25,
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '0.875rem'
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Collapse>
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            {/* Page Count Filter */}
+            <Box className="mb-4">
+              <Box 
+                className="flex justify-between items-center cursor-pointer py-2"
+                onClick={() => setExpandedFilters({...expandedFilters, pageCount: !expandedFilters.pageCount})}
+                sx={{ 
+                  '&:hover': { bgcolor: 'grey.50' },
+                  borderRadius: 1,
+                  px: 1
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  Page Count
+                </Typography>
+                <Badge badgeContent={selectedPageRange ? 1 : 0} color="primary">
+                  {expandedFilters.pageCount ? 
+                    <ChevronUpIcon className="h-4 w-4 text-gray-500" /> : 
+                    <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                  }
+                </Badge>
+              </Box>
+              <Collapse in={expandedFilters.pageCount}>
+                <Box className="mt-2">
+                  {pageCountRanges.map((range) => (
+                    <FormControlLabel
+                      key={range.label}
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={selectedPageRange?.min === range.min && selectedPageRange?.max === range.max}
+                          onChange={() => setSelectedPageRange(
+                            selectedPageRange?.min === range.min && selectedPageRange?.max === range.max
+                              ? null
+                              : { min: range.min, max: range.max }
+                          )}
+                          sx={{ py: 0.25 }}
+                        />
+                      }
+                      label={<Typography variant="body2" sx={{ fontSize: '0.875rem' }}>{range.label}</Typography>}
+                      sx={{ 
+                        display: 'flex', 
+                        width: '100%',
+                        ml: 0, 
+                        mr: 0,
+                        my: 0.25,
+                        '& .MuiFormControlLabel-label': {
+                          fontSize: '0.875rem'
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+              </Collapse>
+            </Box>
+
+            <Button 
+              variant="contained" 
+              fullWidth 
+              sx={{ 
+                mt: 3,
+                py: 1.5,
+                borderRadius: 2,
+                fontWeight: 600,
+                textTransform: 'none',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                }
+              }}
+              onClick={handleApplyFilters}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Apply Filters'}
+            </Button>
+
+            {/* Clear filters button */}
+            <Button 
+              variant="text" 
+              fullWidth 
+              sx={{ 
+                mt: 1,
+                py: 1,
+                textTransform: 'none',
+                color: 'text.secondary'
+              }}
+              onClick={() => {
+                setSelectedGenres([]);
+                setSelectedCategories([]);
+                setSelectedLanguages([]);
+                setSelectedPageRange(null);
+                setSelectedRating(null);
+                setYearRange([2000, 2023]);
+                setFilteredBooks(books);
+              }}
+            >
+              Clear All Filters
+            </Button>
+          </Paper>
+
+          {/* Enhanced Main Content */}
+          <Box className="flex-1">
+            {/* Mobile Filter Toggle Button */}
+            <Button
+              variant="outlined"
+              startIcon={<FunnelIcon className="h-5 w-5" />}
+              onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+              sx={{
+                display: { xs: 'flex', lg: 'none' },
+                mb: 3,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 500
+              }}
+            >
+              {isMobileFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+              {(selectedGenres.length > 0 || selectedCategories.length > 0 || selectedLanguages.length > 0 || selectedRating || selectedPageRange) && (
+                <Badge 
+                  badgeContent={
+                    selectedGenres.length + 
+                    selectedCategories.length + 
+                    selectedLanguages.length + 
+                    (selectedRating ? 1 : 0) + 
+                    (selectedPageRange ? 1 : 0)
+                  } 
+                  color="primary" 
+                  sx={{ ml: 1 }}
+                />
+              )}
+            </Button>
+
+            {/* Enhanced Search Section */}
+            <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, mb: 4, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: 'text.primary', fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+                Search Books
+              </Typography>
+              <Box className="flex flex-col gap-3">
                 <TextField
                   fullWidth
-                  placeholder="Find your next favorite book..."
+                  placeholder="Search by title, author, or keyword..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   InputProps={{
@@ -565,238 +783,635 @@ const Browse: React.FC = () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ background: 'white', borderRadius: 2 }}
+                  sx={{ 
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      backgroundColor: 'white'
+                    }
+                  }}
                 />
-                <Select
-                  value={searchType}
-                  onChange={e => setSearchType(e.target.value as any)}
-                  size="small"
-                  sx={{ minWidth: 140, background: 'white', borderRadius: 2 }}
-                >
-                  <MenuItem value="all">All</MenuItem>
-                  <MenuItem value="title">Title</MenuItem>
-                  <MenuItem value="author">Author</MenuItem>
-                  {/* <MenuItem value="genre">Genre</MenuItem> */}
-                </Select>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ borderRadius: 2 }}
-                  onClick={handleSearch}
-                  disabled={loading}
-                >
-                  Search
-                </Button>
+                <Box className="flex flex-col sm:flex-row gap-3">
+                  <Select
+                    value={searchType}
+                    onChange={e => setSearchType(e.target.value as any)}
+                    sx={{ 
+                      minWidth: { xs: '100%', sm: 140 },
+                      borderRadius: 2,
+                      backgroundColor: 'white'
+                    }}
+                  >
+                    <MenuItem value="all">All Fields</MenuItem>
+                    <MenuItem value="title">Title Only</MenuItem>
+                    <MenuItem value="author">Author Only</MenuItem>
+                  </Select>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    sx={{ 
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                      }
+                    }}
+                    onClick={handleSearch}
+                    disabled={loading}
+                  >
+                    Search
+                  </Button>
+                </Box>
               </Box>
+            </Paper>
+
+            {/* Enhanced Tabs */}
+            <Box sx={{ mb: 3 }}>
               <Tabs
                 value={tab}
                 onChange={(_, v) => setTab(v)}
-                sx={{ mb: 2 }}
-                textColor="primary"
-                indicatorColor="primary"
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{ 
+                  '& .MuiTab-root': {
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
+                    minHeight: { xs: 44, sm: 48 },
+                    minWidth: { xs: 80, sm: 160 }
+                  },
+                  '& .MuiTabs-indicator': {
+                    height: 3,
+                    borderRadius: 1.5
+                  }
+                }}
               >
                 <Tab label="All Books" />
-                <Tab label="Popular" />
+                <Tab label="Popular This Week" />
                 <Tab label="New Releases" />
                 <Tab label="Top Rated" />
               </Tabs>
-              {/* Tab Content */}
-              {tab === 1 ? (
-                popularLoading ? (
-                  <Box className="flex justify-center items-center h-64">
-                    <CircularProgress />
-                  </Box>
-                ) : popularError ? (
-                  <Alert severity="error" sx={{ mb: 2 }}>{popularError}</Alert>
-                ) : (
-                  <Grid container spacing={3}>
-                    {popularBooks.map(({ book, reviewCount }) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3} key={book._id}>
-                        <Card className="relative flex flex-col h-full" sx={{ borderRadius: 3 }}>
-                          <Box className="relative">
-                            <CardMedia
-                              component="img"
-                              image={book.coverImage}
-                              alt={book.title}
-                              sx={{ height: 220, objectFit: 'cover', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                            />
-                            <Box className="absolute top-2 right-2 bg-black bg-opacity-80 text-white rounded px-2 py-1 flex items-center gap-1">
-                              <span className="text-yellow-400">★</span>
-                              <Typography variant="caption">
-                                {typeof book.averageRating === 'number'
-                                  ? book.averageRating.toFixed(1)
-                                  : '-'}
-                              </Typography>
-                            </Box>
-                          </Box>
-                          <CardContent className="flex-1 flex flex-col justify-between">
-                            <Box>
-                              <Typography variant="subtitle1" className="font-semibold" noWrap>{book.title}</Typography>
-                              <Typography variant="body2" color="text.secondary" noWrap>{book.author}</Typography>
-                              <Typography variant="body2" color="text.secondary">{reviewCount} reviews this week</Typography>
-                            </Box>
-                            <Box className="flex gap-2 mt-3">
-                              <Button
-                                variant="contained"
-                                size="small"
-                                sx={{ borderRadius: 2 }}
-                                component={Link}
-                                to={`/books/${book._id}`}
-                              >
-                                View Details
-                              </Button>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Grid>
+            </Box>
+
+            {/* Results count and filters */}
+            {tab === 0 && (
+              <Box className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+                <Typography variant="body1" color="text.secondary">
+                  {filteredBooks.length} books found
+                </Typography>
+                {(selectedGenres.length > 0 || selectedCategories.length > 0 || selectedLanguages.length > 0 || selectedRating || selectedPageRange) && (
+                  <Box className="flex gap-1 flex-wrap">
+                    {selectedGenres.map(genre => (
+                      <Chip 
+                        key={genre} 
+                        label={genre} 
+                        size="small" 
+                        onDelete={() => setSelectedGenres(selectedGenres.filter(g => g !== genre))}
+                        color="primary"
+                        variant="outlined"
+                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                      />
                     ))}
-                  </Grid>
-                )
-              ) : tab === 2 ? (
-                newReleasesLoading ? (
-                  <Box className="flex justify-center items-center h-64">
-                    <CircularProgress />
-                  </Box>
-                ) : newReleasesError ? (
-                  <Alert severity="error" sx={{ mb: 2 }}>{newReleasesError}</Alert>
-                ) : (
-                  <Grid container spacing={3}>
-                    {newReleases.map((book) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3} key={book._id}>
-                        <Card className="relative flex flex-col h-full" sx={{ borderRadius: 3 }}>
-                          <Box className="relative">
-                            <CardMedia
-                              component="img"
-                              image={book.coverImage}
-                              alt={book.title}
-                              sx={{ height: 220, objectFit: 'cover', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                            />
-                            <Box className="absolute top-2 right-2 bg-black bg-opacity-80 text-white rounded px-2 py-1 flex items-center gap-1">
-                              <span className="text-yellow-400">★</span>
-                              <Typography variant="caption">{book.averageRating?.toFixed(1) || 'N/A'}</Typography>
-                            </Box>
-                          </Box>
-                          <CardContent className="flex-1 flex flex-col justify-between">
-                            <Box>
-                              <Typography variant="subtitle1" className="font-semibold" noWrap>{book.title}</Typography>
-                              <Typography variant="body2" color="text.secondary" noWrap>{book.author}</Typography>
-                            </Box>
-                            <Box className="flex gap-2 mt-3">
-                              <Button
-                                variant="contained"
-                                size="small"
-                                sx={{ borderRadius: 2 }}
-                                component={Link}
-                                to={`/books/${book._id}`}
-                              >
-                                View Details
-                              </Button>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Grid>
+                    {selectedCategories.map(category => (
+                      <Chip 
+                        key={category} 
+                        label={category} 
+                        size="small" 
+                        onDelete={() => setSelectedCategories(selectedCategories.filter(c => c !== category))}
+                        color="secondary"
+                        variant="outlined"
+                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                      />
                     ))}
-                  </Grid>
-                )
-              ) : tab === 3 ? (
-                topRatedLoading ? (
-                  <Box className="flex justify-center items-center h-64">
-                    <CircularProgress />
-                  </Box>
-                ) : topRatedError ? (
-                  <Alert severity="error" sx={{ mb: 2 }}>{topRatedError}</Alert>
-                ) : (
-                  <Grid container spacing={3}>
-                    {topRated.map((book) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3} key={book._id}>
-                        <Card className="relative flex flex-col h-full" sx={{ borderRadius: 3 }}>
-                          <Box className="relative">
-                            <CardMedia
-                              component="img"
-                              image={book.coverImage}
-                              alt={book.title}
-                              sx={{ height: 220, objectFit: 'cover', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                            />
-                            <Box className="absolute top-2 right-2 bg-black bg-opacity-80 text-white rounded px-2 py-1 flex items-center gap-1">
-                              <span className="text-yellow-400">★</span>
-                              <Typography variant="caption">{book.averageRating?.toFixed(1) || 'N/A'}</Typography>
-                            </Box>
-                          </Box>
-                          <CardContent className="flex-1 flex flex-col justify-between">
-                            <Box>
-                              <Typography variant="subtitle1" className="font-semibold" noWrap>{book.title}</Typography>
-                              <Typography variant="body2" color="text.secondary" noWrap>{book.author}</Typography>
-                            </Box>
-                            <Box className="flex gap-2 mt-3">
-                              <Button
-                                variant="contained"
-                                size="small"
-                                sx={{ borderRadius: 2 }}
-                                component={Link}
-                                to={`/books/${book._id}`}
-                              >
-                                View Details
-                              </Button>
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Grid>
+                    {selectedLanguages.map(language => (
+                      <Chip 
+                        key={language} 
+                        label={language} 
+                        size="small" 
+                        onDelete={() => setSelectedLanguages(selectedLanguages.filter(l => l !== language))}
+                        color="success"
+                        variant="outlined"
+                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                      />
                     ))}
-                  </Grid>
-                )
+                    {selectedRating && (
+                      <Chip 
+                        label={`${selectedRating}+ Stars`} 
+                        size="small" 
+                        onDelete={() => setSelectedRating(null)}
+                        color="warning"
+                        variant="outlined"
+                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                      />
+                    )}
+                    {selectedPageRange && (
+                      <Chip 
+                        label={`${selectedPageRange.min}-${selectedPageRange.max} pages`} 
+                        size="small" 
+                        onDelete={() => setSelectedPageRange(null)}
+                        color="info"
+                        variant="outlined"
+                        sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                      />
+                    )}
+                  </Box>
+                )}
+              </Box>
+            )}
+
+            {/* Enhanced Tab Content */}
+            {tab === 1 ? (
+              // Popular Books Tab
+              popularLoading ? (
+                <Box className="flex justify-center items-center h-64">
+                  <CircularProgress size={48} />
+                </Box>
+              ) : popularError ? (
+                <Alert severity="error" sx={{ mb: 2 }}>{popularError}</Alert>
               ) : (
-                // All Books tab
-                <>
-              <Typography variant="body2" className="mb-2 text-gray-600">{filteredBooks.length} books found</Typography>
-                  {error && (
-                    <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
-                  )}
-                  {loading ? (
-                    <Box className="flex justify-center items-center h-64">
-                      <CircularProgress />
-                    </Box>
-                  ) : (
-              <Grid container spacing={3}>
-                {filteredBooks.map((book) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={book._id}>
-                    <Card className="relative flex flex-col h-full" sx={{ borderRadius: 3 }}>
-                      <Box className="relative">
-                        <CardMedia
-                          component="img"
-                          image={book.coverImage}
-                          alt={book.title}
-                          sx={{ height: 220, objectFit: 'cover', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                        />
-                        <Box className="absolute top-2 right-2 bg-black bg-opacity-80 text-white rounded px-2 py-1 flex items-center gap-1">
-                          <span className="text-yellow-400">★</span>
-                                <Typography variant="caption">{book.averageRating?.toFixed(1) || 'N/A'}</Typography>
+                <Grid container spacing={3}>
+                  {popularBooks.map(({ book, reviewCount }) => (
+                    <Grid item xs={6} sm={6} md={4} lg={3} key={book._id}>
+                      <Card 
+                        sx={{ 
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          borderRadius: 3,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        <Box sx={{ position: 'relative' }}>
+                          <CardMedia
+                            component="img"
+                            image={book.coverImage}
+                            alt={book.title}
+                            sx={{ 
+                              height: { xs: 180, sm: 200, md: 240 }, 
+                              objectFit: 'cover'
+                            }}
+                          />
+                          <Box 
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              right: 8,
+                              background: 'rgba(0,0,0,0.8)',
+                              color: 'white',
+                              borderRadius: 2,
+                              px: { xs: 1, sm: 1.5 },
+                              py: 0.5,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5
+                            }}
+                          >
+                            <StarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+                            <Typography variant="caption" sx={{ fontWeight: 500, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              {typeof book.averageRating === 'number'
+                                ? book.averageRating.toFixed(1)
+                                : 'N/A'}
+                            </Typography>
+                          </Box>
+                          <Chip
+                            label="Popular"
+                            size="small"
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              left: 8,
+                              backgroundColor: 'error.main',
+                              color: 'white',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                              height: { xs: 20, sm: 24 }
+                            }}
+                          />
                         </Box>
-                      </Box>
-                      <CardContent className="flex-1 flex flex-col justify-between">
-                        <Box>
-                          <Typography variant="subtitle1" className="font-semibold" noWrap>{book.title}</Typography>
-                          <Typography variant="body2" color="text.secondary" noWrap>{book.author}</Typography>
-                        </Box>
-                        <Box className="flex gap-2 mt-3">
+                        <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2.5 } }}>
+                          <Typography 
+                            variant="h6" 
+                            sx={{ 
+                              fontWeight: 600, 
+                              mb: 0.5,
+                              lineHeight: 1.3,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem' }
+                            }}
+                          >
+                            {book.title}
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary" 
+                            sx={{ mb: 1.5, fontWeight: 500, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                          >
+                            by {book.author}
+                          </Typography>
+                          <Box className="flex items-center gap-1 mb-2">
+                            <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
+                              {reviewCount} reviews this week
+                            </Typography>
+                          </Box>
                           <Button
                             variant="contained"
-                            size="small"
-                            sx={{ borderRadius: 2 }}
+                            fullWidth
                             component={Link}
                             to={`/books/${book._id}`}
+                            sx={{
+                              mt: 'auto',
+                              borderRadius: 2,
+                              textTransform: 'none',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              py: { xs: 0.75, sm: 1 },
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              '&:hover': {
+                                background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                              }
+                            }}
                           >
                             View Details
                           </Button>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )
+            ) : tab === 2 ? (
+              // New Releases Tab (similar enhanced styling)
+              newReleasesLoading ? (
+                <Box className="flex justify-center items-center h-64">
+                  <CircularProgress size={48} />
+                </Box>
+              ) : newReleasesError ? (
+                <Alert severity="error" sx={{ mb: 2 }}>{newReleasesError}</Alert>
+              ) : (
+                <Grid container spacing={3}>
+                  {newReleases.map((book) => (
+                    <Grid item xs={6} sm={6} md={4} lg={3} key={book._id}>
+                      <Card 
+                        sx={{ 
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          borderRadius: 3,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        <Box sx={{ position: 'relative' }}>
+                          <CardMedia
+                            component="img"
+                            image={book.coverImage}
+                            alt={book.title}
+                            sx={{ 
+                              height: { xs: 180, sm: 200, md: 240 }, 
+                              objectFit: 'cover'
+                            }}
+                          />
+                          <Box 
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              right: 8,
+                              background: 'rgba(0,0,0,0.8)',
+                              color: 'white',
+                              borderRadius: 2,
+                              px: { xs: 1, sm: 1.5 },
+                              py: 0.5,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5
+                            }}
+                          >
+                            <StarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+                            <Typography variant="caption" sx={{ fontWeight: 500, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              {book.averageRating?.toFixed(1) || 'N/A'}
+                            </Typography>
+                          </Box>
+                          <Chip
+                            label="New"
+                            size="small"
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              left: 8,
+                              backgroundColor: 'success.main',
+                              color: 'white',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                              height: { xs: 20, sm: 24 }
+                            }}
+                          />
                         </Box>
-                      </CardContent>
-                    </Card>
+                        <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2.5 } }}>
+                          <Typography 
+                            variant="h6" 
+                            sx={{ 
+                              fontWeight: 600, 
+                              mb: 0.5,
+                              lineHeight: 1.3,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem' }
+                            }}
+                          >
+                            {book.title}
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary" 
+                            sx={{ mb: 2, fontWeight: 500, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                          >
+                            by {book.author}
+                          </Typography>
+                          <Button
+                            variant="contained"
+                            fullWidth
+                            component={Link}
+                            to={`/books/${book._id}`}
+                            sx={{
+                              mt: 'auto',
+                              borderRadius: 2,
+                              textTransform: 'none',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              py: { xs: 0.75, sm: 1 },
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              '&:hover': {
+                                background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                              }
+                            }}
+                          >
+                            View Details
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )
+            ) : tab === 3 ? (
+              // Top Rated Tab (similar enhanced styling)
+              topRatedLoading ? (
+                <Box className="flex justify-center items-center h-64">
+                  <CircularProgress size={48} />
+                </Box>
+              ) : topRatedError ? (
+                <Alert severity="error" sx={{ mb: 2 }}>{topRatedError}</Alert>
+              ) : (
+                <Grid container spacing={3}>
+                  {topRated.map((book) => (
+                    <Grid item xs={6} sm={6} md={4} lg={3} key={book._id}>
+                      <Card 
+                        sx={{ 
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          borderRadius: 3,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        <Box sx={{ position: 'relative' }}>
+                          <CardMedia
+                            component="img"
+                            image={book.coverImage}
+                            alt={book.title}
+                            sx={{ 
+                              height: { xs: 180, sm: 200, md: 240 }, 
+                              objectFit: 'cover'
+                            }}
+                          />
+                          <Box 
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              right: 8,
+                              background: 'rgba(0,0,0,0.8)',
+                              color: 'white',
+                              borderRadius: 2,
+                              px: { xs: 1, sm: 1.5 },
+                              py: 0.5,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5
+                            }}
+                          >
+                            <StarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+                            <Typography variant="caption" sx={{ fontWeight: 500, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              {book.averageRating?.toFixed(1) || 'N/A'}
+                            </Typography>
+                          </Box>
+                          <Chip
+                            label="Top Rated"
+                            size="small"
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              left: 8,
+                              backgroundColor: 'warning.main',
+                              color: 'white',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                              height: { xs: 20, sm: 24 }
+                            }}
+                          />
+                        </Box>
+                        <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2.5 } }}>
+                          <Typography 
+                            variant="h6" 
+                            sx={{ 
+                              fontWeight: 600, 
+                              mb: 0.5,
+                              lineHeight: 1.3,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem' }
+                            }}
+                          >
+                            {book.title}
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary" 
+                            sx={{ mb: 2, fontWeight: 500, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                          >
+                            by {book.author}
+                          </Typography>
+                          <Button
+                            variant="contained"
+                            fullWidth
+                            component={Link}
+                            to={`/books/${book._id}`}
+                            sx={{
+                              mt: 'auto',
+                              borderRadius: 2,
+                              textTransform: 'none',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              py: { xs: 0.75, sm: 1 },
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              '&:hover': {
+                                background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                              }
+                            }}
+                          >
+                            View Details
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )
+            ) : (
+              // All Books Tab
+              <>
+                {error && (
+                  <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+                )}
+                {loading ? (
+                  <Box className="flex justify-center items-center h-64">
+                    <CircularProgress size={48} />
+                  </Box>
+                ) : (
+                  <Grid container spacing={3}>
+                    {filteredBooks.map((book) => (
+                      <Grid item xs={6} sm={6} md={4} lg={3} key={book._id}>
+                        <Card 
+                          sx={{ 
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            borderRadius: 3,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'translateY(-4px)',
+                              boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                              borderColor: 'primary.main'
+                            }
+                          }}
+                        >
+                          <Box sx={{ position: 'relative' }}>
+                            <CardMedia
+                              component="img"
+                              image={book.coverImage}
+                              alt={book.title}
+                              sx={{ 
+                                height: { xs: 180, sm: 200, md: 240 }, 
+                                objectFit: 'cover'
+                              }}
+                            />
+                            <Box 
+                              sx={{
+                                position: 'absolute',
+                                top: 8,
+                                right: 8,
+                                background: 'rgba(0,0,0,0.8)',
+                                color: 'white',
+                                borderRadius: 2,
+                                px: { xs: 1, sm: 1.5 },
+                                py: 0.5,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5
+                              }}
+                            >
+                              <StarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+                              <Typography variant="caption" sx={{ fontWeight: 500, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                                {book.averageRating?.toFixed(1) || 'N/A'}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <CardContent sx={{ flex: 1, p: { xs: 1.5, sm: 2.5 } }}>
+                            <Typography 
+                              variant="h6" 
+                              sx={{ 
+                                fontWeight: 600, 
+                                mb: 0.5,
+                                lineHeight: 1.3,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                fontSize: { xs: '0.875rem', sm: '1rem', md: '1.25rem' }
+                              }}
+                            >
+                              {book.title}
+                            </Typography>
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary" 
+                              sx={{ mb: 2, fontWeight: 500, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                            >
+                              by {book.author}
+                            </Typography>
+                            <Button
+                              variant="contained"
+                              fullWidth
+                              component={Link}
+                              to={`/books/${book._id}`}
+                              sx={{
+                                mt: 'auto',
+                                borderRadius: 2,
+                                textTransform: 'none',
+                                fontWeight: 600,
+                                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                                py: { xs: 0.75, sm: 1 },
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                '&:hover': {
+                                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                                }
+                              }}
+                            >
+                              View Details
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
-              </Grid>
-                  )}
-                </>
-              )}
-            </Box>
+                )}
+              </>
+            )}
           </Box>
         </Box>
       </Box>

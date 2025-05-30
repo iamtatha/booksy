@@ -4,8 +4,8 @@ export interface IBook extends Document {
   title: string;
   author: string;
   author_username: string;
-  description: string;
-  coverImage: string;
+  description?: string;
+  coverImage?: string;
   averageRating: number;
   totalReviews: number;
   publisher: string;
@@ -14,8 +14,8 @@ export interface IBook extends Document {
   language: string;
   edition: string;
   pageCount: number;
-  amazonLink: string;
-  isbn: string;
+  amazonLink?: string;
+  isbn?: string;
   genre: string[];
   category: string;
   listed_by_username: string;
@@ -42,11 +42,13 @@ const BookSchema = new Schema<IBook>(
     },
     description: {
       type: String,
-      required: true,
+      required: false,
+      trim: true,
     },
     coverImage: {
       type: String,
-      required: true,
+      required: false,
+      trim: true,
     },
     averageRating: {
       type: Number,
@@ -83,12 +85,14 @@ const BookSchema = new Schema<IBook>(
     },
     amazonLink: {
       type: String,
-      required: true,
+      required: false,
+      trim: true,
     },
     isbn: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
+      sparse: true,
       trim: true,
     },
     genre: {

@@ -314,7 +314,6 @@ const AddBook: React.FC = () => {
                     name="description"
                     value={form.description}
                     onChange={handleChange}
-                    required
                     fullWidth
                     multiline
                     minRows={3}
@@ -327,7 +326,6 @@ const AddBook: React.FC = () => {
                     name="coverImage"
                     value={form.coverImage}
                     onChange={handleChange}
-                    required
                     fullWidth
                     variant="outlined"
                   />
@@ -437,7 +435,6 @@ const AddBook: React.FC = () => {
                     name="amazonLink"
                     value={form.amazonLink}
                     onChange={handleChange}
-                    required
                     fullWidth
                     variant="outlined"
                   />
@@ -448,7 +445,6 @@ const AddBook: React.FC = () => {
                     name="isbn"
                     value={form.isbn}
                     onChange={handleChange}
-                    required
                     fullWidth
                     variant="outlined"
                   />

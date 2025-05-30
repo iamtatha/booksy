@@ -54,8 +54,18 @@ const handleApiError = (error: unknown): never => {
 // Add auth token to all requests
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  if (token) {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  console.log('Axios interceptor - URL:', config.url);
+  console.log('Axios interceptor - Token exists:', !!token);
+  console.log('Axios interceptor - User ID exists:', !!user._id);
+  
+  // Only add auth header if both token and valid user exist
+  if (token && user._id) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log('Axios interceptor - Added auth header');
+  } else {
+    console.log('Axios interceptor - No auth header added');
   }
   return config;
 });
