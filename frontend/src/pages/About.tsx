@@ -121,101 +121,221 @@ const About: React.FC = () => {
         </Box>
 
         <Grid container spacing={{ xs: 2, md: 4 }}>
-        <Grid item xs={12}>
-            <Paper elevation={0} sx={{ p: { xs: 3, sm: 4 }, bgcolor: 'grey.50' }}>
-              <Typography 
-                variant="h4" 
-                gutterBottom
-                sx={{ 
-                  fontSize: { xs: '1.75rem', sm: '2.125rem' }
-                }}
-              >
-                Founder and Developer
-              </Typography>
+          <Grid item xs={12}>
+            <Paper 
+              elevation={6} 
+              sx={{ 
+                p: { xs: 4, sm: 6 }, 
+                bgcolor: 'linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%)',
+                borderRadius: 4,
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '4px',
+                  background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                },
+                '@keyframes shimmer': {
+                  '0%': { backgroundPosition: '-200% 0' },
+                  '100%': { backgroundPosition: '200% 0' },
+                }
+              }}
+            >
+              <Box sx={{ textAlign: 'center', mb: 4 }}>
+                <Typography 
+                  variant="h3" 
+                  gutterBottom
+                  sx={{ 
+                    fontSize: { xs: '2rem', sm: '2.5rem' },
+                    fontWeight: 300,
+                    color: '#1a202c',
+                    letterSpacing: '-0.025em',
+                    mb: 1
+                  }}
+                >
+                  Meet the Founder
+                </Typography>
+                <Box 
+                  sx={{ 
+                    width: 60, 
+                    height: 3, 
+                    bgcolor: 'primary.main', 
+                    mx: 'auto',
+                    borderRadius: 2,
+                    background: 'linear-gradient(90deg, #667eea, #764ba2)'
+                  }} 
+                />
+              </Box>
+              
               <Box sx={{ 
                 display: 'flex', 
-                flexDirection: { xs: 'column', sm: 'row' },
-                gap: { xs: 3, sm: 4 },
-                alignItems: { xs: 'center', sm: 'flex-start' }
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: { xs: 4, md: 6 },
+                alignItems: 'center'
               }}>
-                <Box
-                  component="img"
-                  src="/founder.jpg"
-                  alt="Tathagata Dey"
-                  sx={{
-                    width: { xs: 150, sm: 200 },
-                    height: { xs: 150, sm: 200 },
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    boxShadow: 3,
-                  }}
-                />
-                <Box sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
-                  <Typography paragraph>
-                    Booksy was founded by Tathagata Dey, an AI Developer and researcher. Tathagata loves to read, write and build
-                    tech products.
-                    With a vision to create a modern, user-friendly platform for book lovers, He 
-                    developed Booksy to bridge the gap between readers, authors, and publishers.
+                <Box sx={{ 
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  minWidth: { md: 280 }
+                }}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: -8,
+                        left: -8,
+                        right: -8,
+                        bottom: -8,
+                        background: 'linear-gradient(45deg, #667eea, #764ba2, #667eea)',
+                        borderRadius: '50%',
+                        zIndex: 0,
+                        backgroundSize: '200% 200%',
+                        animation: 'gradientRotate 4s ease infinite',
+                      },
+                      '@keyframes gradientRotate': {
+                        '0%': { backgroundPosition: '0% 50%' },
+                        '50%': { backgroundPosition: '100% 50%' },
+                        '100%': { backgroundPosition: '0% 50%' },
+                      }
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src="/founder.jpg"
+                      alt="Tathagata Dey"
+                      sx={{
+                        width: { xs: 200, sm: 240 },
+                        height: { xs: 200, sm: 240 },
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '6px solid white',
+                        position: 'relative',
+                        zIndex: 1,
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                        transition: 'transform 0.3s ease',
+                        '&:hover': {
+                          transform: 'scale(1.05)',
+                        }
+                      }}
+                    />
+                  </Box>
+                </Box>
+                
+                <Box sx={{ 
+                  flex: 1,
+                  textAlign: { xs: 'center', md: 'left' }
+                }}>
+                  <Typography 
+                    variant="h4" 
+                    gutterBottom
+                    sx={{ 
+                      fontSize: { xs: '1.75rem', sm: '2rem' },
+                      fontWeight: 600,
+                      color: '#1a202c',
+                      mb: 1
+                    }}
+                  >
+                    Tathagata Dey
                   </Typography>
-                  <Typography paragraph>
-                    The platform combines cutting-edge technology with a deep understanding of what readers 
-                    need, resulting in an intuitive and engaging experience for all users. Tathagata continues 
-                    to lead the development of Booksy, constantly adding new features and improvements based 
-                    on community feedback.
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      color: 'primary.main',
+                      fontWeight: 500,
+                      mb: 3,
+                      fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                    }}
+                  >
+                    AI Developer & Founder
                   </Typography>
-                  <Box sx={{ mt: { xs: 2, sm: 3 } }}>
+                  
+                  <Typography 
+                    paragraph 
+                    sx={{ 
+                      fontSize: { xs: '1rem', sm: '1.1rem' },
+                      lineHeight: 1.7,
+                      color: '#4a5568',
+                      mb: 3
+                    }}
+                  >
+                    Booksy was founded by Tathagata Dey, an AI Developer and researcher with a passion for 
+                    literature and technology. Combining his love for reading, writing, and building innovative 
+                    tech products, Tathagata envisioned a modern, user-friendly platform that would bridge 
+                    the gap between readers, authors, and publishers.
+                  </Typography>
+                  
+                  <Typography 
+                    paragraph 
+                    sx={{ 
+                      fontSize: { xs: '1rem', sm: '1.1rem' },
+                      lineHeight: 1.7,
+                      color: '#4a5568',
+                      mb: 4
+                    }}
+                  >
+                    The platform represents a perfect fusion of cutting-edge technology with deep understanding 
+                    of reader needs, resulting in an intuitive and engaging experience. Tathagata continues to 
+                    lead Booksy's development, constantly innovating and adding features based on community feedback.
+                  </Typography>
+                  
+                  <Box>
                     <Typography 
                       variant="h6" 
                       gutterBottom
                       sx={{ 
-                        fontSize: { xs: '1.1rem', sm: '1.25rem' }
+                        fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                        fontWeight: 600,
+                        color: '#1a202c',
+                        mb: 2
                       }}
                     >
-                      Connect with me:
+                      Connect & Follow
                     </Typography>
                     <Box sx={{ 
                       display: 'flex', 
-                      gap: 1,
-                      justifyContent: { xs: 'center', sm: 'flex-start' },
-                      '& .MuiIconButton-root': { 
-                        color: 'primary.main',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                        }
-                      }
+                      gap: 2,
+                      justifyContent: { xs: 'center', md: 'flex-start' },
+                      flexWrap: 'wrap'
                     }}>
-                      <IconButton
-                        href="https://iamtatha.github.io"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size={isMobile ? "medium" : "large"}
-                      >
-                        <Language />
-                      </IconButton>
-                      <IconButton
-                        href="https://github.com/iamtatha"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size={isMobile ? "medium" : "large"}
-                      >
-                        <GitHub />
-                      </IconButton>
-                      <IconButton
-                        href="https://www.linkedin.com/in/tathagata-dey-580245172/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size={isMobile ? "medium" : "large"}
-                      >
-                        <LinkedIn />
-                      </IconButton>
-                      <IconButton
-                        href="https://instagram.com/epistemophilic_nerd"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size={isMobile ? "medium" : "large"}
-                      >
-                        <Instagram />
-                      </IconButton>
+                      {[
+                        { icon: Language, href: "https://iamtatha.github.io", label: "Portfolio", color: "#667eea" },
+                        { icon: GitHub, href: "https://github.com/iamtatha", label: "GitHub", color: "#333" },
+                        { icon: LinkedIn, href: "https://www.linkedin.com/in/tathagata-dey-580245172/", label: "LinkedIn", color: "#0077b5" },
+                        { icon: Instagram, href: "https://instagram.com/epistemophilic_nerd", label: "Instagram", color: "#e4405f" }
+                      ].map((social, index) => (
+                        <IconButton
+                          key={index}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            bgcolor: 'white',
+                            color: social.color,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                            border: '1px solid #e2e8f0',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              bgcolor: social.color,
+                              color: 'white',
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                            }
+                          }}
+                        >
+                          <social.icon sx={{ fontSize: 24 }} />
+                        </IconButton>
+                      ))}
                     </Box>
                   </Box>
                 </Box>
